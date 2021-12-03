@@ -74,6 +74,24 @@ void insereMeioListaSimples(TNo **prim, int k, int elem)
 
 // Meio
 
+void removeMeio(TNo **lista, int pos)
+{
+    TNo *aux = *lista;
+
+    for (int i = 1; i <= pos - 1; i++)
+    {
+        if (i == pos - 1)
+        {
+            TNo *p = aux->prox;
+            aux->prox = p->prox;
+
+            free(p);
+            p = NULL;
+        }
+        aux = aux->prox;
+    }
+}
+
 //-------------------Busca de elemento--------------------//
 
 //--------------------Imprime lista---------------------//
@@ -105,6 +123,8 @@ int main()
     printf("------------\n");
     insereMeioListaSimples(&prim, 2, 1);
     imprimeLista(prim);
-
+    removeMeio(&prim, 2);
+    printf("------------\n");
+    imprimeLista(prim);
     return 0;
 }
