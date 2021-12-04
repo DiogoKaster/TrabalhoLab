@@ -84,7 +84,12 @@ void insereMeioListaSimples(TNo **prim, int k, int elem)
     }
 }
 /*
-
+Essa função envolve um pouco mais de complexidade, ela recebe os mesmos dados de parametro da insereInicio, porém com um a mais, a posição do elemento
+que o usuário quer inserir depois, com essa informação ela faz a mesma verificação com assert e cria um ponteiro auxiliar para receber o retorno
+da função de alocação, e outro ponteiro auxiliar para podermos percorrer a lista ja existente. Criamos um laço for, para percorrer a lista
+até a posição desejada, caso ele encontre a posição desejada antes de chegar ao fim da lista, ele define o proximo do meu novo nó, como o proximo da
+minha posição atual, e define o proximo da minha posição atual, como o novo nó, inserindo assim, após o nó desejado. Caso ele chegue ao fim da lista
+e não encontre a posição desejada, ele dirá que a lista é pequena demais para o valor desejado.
 */
 
 //--------------------Remoção de elemento--------------------//
@@ -99,17 +104,32 @@ void removeMeio(TNo **lista, int pos)
 
     for (int i = 1; i <= pos - 1; i++)
     {
-        if (i == pos - 1)
+        if (aux != NULL)
         {
-            TNo *p = aux->prox;
-            aux->prox = p->prox;
+            if (i == pos - 1)
+            {
+                TNo *p = aux->prox;
+                aux->prox = p->prox;
 
-            free(p);
-            p = NULL;
+                free(p);
+                p = NULL;
+            }
+            aux = aux->prox;
         }
-        aux = aux->prox;
+        else
+        {
+            printf("Posição inválida, ou muito grande para a lista atual!\n");
+            break;
+        }
     }
 }
+/*
+Essa função de remoção no meio recebe como parametros, o ponteiro de ponteiro para o primeiro nó da lista, e a posição desejada a ser removida,
+a principio ela cria um nó auxiliar que recebe o primeiro da lista, após isso, cria um laço for que percorre a lista até a posição anterior a desejada
+caso ele encontre essa posição na lista, ele verifica se está na posição desejada e cria um nó auxiliar que recebe o proximo do nó atual, e faz com que o 
+proximo do atual nó, seja o próximo do proximo (que foi guardado no ponteiro auxiliar), após isso libera a memória do nó desejado. Caso ele não encontre
+essa posição na lista, imprime uma mensagem de erro e para o laço de repetição.
+*/
 
 //-------------------Busca de elemento--------------------//
 
@@ -129,6 +149,10 @@ void imprimeLista(TNo *lista)
         lista = lista->prox;
     }
 }
+/*
+Essa função recebe como parametro o ponteiro do primeiro nó da lista, caso a lista esteja vazia, ele imprime "Lista vazia!" e para a execução,
+caso não, ele inicia um while que percorre a lista até que ela seja nula, e imprime a chave de cada nó.
+*/
 
 //--------------------Função Main-----------------------//
 
