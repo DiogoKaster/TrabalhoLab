@@ -96,6 +96,21 @@ e não encontre a posição desejada, ele dirá que a lista é pequena demais pa
 
 // Início
 
+void removeInicio(TNo **lista)
+{
+    assert(lista);
+    TNo *aux = *lista;
+    if (*lista == NULL)
+    {
+        return;
+    }
+    else
+    {
+        *lista = (*lista)->prox;
+        free(aux);
+    }
+}
+
 // Meio
 
 void removeMeio(TNo **lista, int pos)
@@ -132,7 +147,27 @@ essa posição na lista, imprime uma mensagem de erro e para o laço de repetiç
 */
 
 //-------------------Busca de elemento--------------------//
-
+TNo *buscaNo(TNo **lista, int chave)
+{
+    TNo *aux = *lista;
+    while (aux != NULL)
+    {
+        if (aux->chave == chave)
+        {
+            return aux;
+        }
+        aux = aux->prox;
+    }
+    return NULL;
+}
+/*
+Essa função recebe o ponteiro de ponteiro para o primeiro da lista e a chave de pesquisa
+ela cria um ponteiro auxiliar para percorrermos e trabalhar na função, após isso
+ela inicia um laço de repetição que repete até que a lista seja nula. Dentro do laço
+ela verifica se a chave do nó atual é igual a chave de pesquisa, caso seja, ela retorna o endereço do nó atual
+caso não seja, ela avança para o proximo nó, caso ela chegue ao ultimo e não encontre a chave desejada
+retorna nulo.
+*/
 //--------------------Imprime lista---------------------//
 
 void imprimeLista(TNo *lista)
@@ -149,6 +184,7 @@ void imprimeLista(TNo *lista)
         lista = lista->prox;
     }
 }
+
 /*
 Essa função recebe como parametro o ponteiro do primeiro nó da lista, caso a lista esteja vazia, ele imprime "Lista vazia!" e para a execução,
 caso não, ele inicia um while que percorre a lista até que ela seja nula, e imprime a chave de cada nó.
@@ -159,6 +195,7 @@ caso não, ele inicia um while que percorre a lista até que ela seja nula, e im
 int main()
 {
     TNo *prim = NULL;
+    TNo *recebeBusca = NULL;
 
     insereInicioListaSimples(&prim, 10);
     insereInicioListaSimples(&prim, 5);
@@ -168,6 +205,17 @@ int main()
     imprimeLista(prim);
     removeMeio(&prim, 2);
     printf("------------\n");
+    removeInicio(&prim);
     imprimeLista(prim);
+
+    recebeBusca = buscaNo(&prim, 5);
+    if (recebeBusca != NULL)
+    {
+        printf("chave: %d\n", recebeBusca->chave);
+    }
+    else
+    {
+        printf("Nó não encontrado.\n");
+    }
     return 0;
 }
