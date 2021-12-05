@@ -4,13 +4,16 @@
 #include <assert.h>
 
 //-------------------Struct e alocação de Nó-------------------//
-
+/**/
 typedef struct No
 {
     int chave;
     struct No *prox;
 } TNo;
-
+/*
+Essa struct será usada de base para comparação com as próximas funções, ela contem um elemento de dado que é a chave, e um ponteiro
+com o mesmo tipo da struct que está sendo criada, apontando para o proximo nó.
+*/
 TNo *alocaNo(int k)
 {
     TNo *no;
@@ -23,6 +26,12 @@ TNo *alocaNo(int k)
     no->prox = NULL;
     return no;
 }
+
+/*
+A função que aloca um novo nó, a função dela é receber a chave do novo nó como parametro e criar uma alocação dinamica para esse
+novo nó, após isso ela verifica se a alocação foi realizada, em caso de erro, retorna nulo, em caso de sucesso, atribui a chave ao novo
+nó, e nulo ao ponteiro próximo, após isso, retorna esse novo nó criado. Essa função será chamada nas funções de inserção.
+*/
 
 //-------------------Insere início--------------------//
 
@@ -38,6 +47,13 @@ void insereInicioListaSimples(TNo **p, int k)
     paux->prox = *p;
     *p = paux;
 }
+/*
+Essa função de inserção no inicio, recebe como parametros, o ponteiro de ponteiro para o endereço do primeiro nó da lista e a chave do novo nó
+a ser criado, ela usa a função assert da lib assert.h para verificar se esse endereço existe e é valido, caso não seja, ela para a execução do
+codio, caso seja, a função cria um ponteiro auxiliar do tipo Tno, que vai receber o retorno da função de alocação, após isso ele verifica o retorno
+para saber se houve sucesso, caso não tenha, ele para a execução da FUNÇÃO, caso haja sucesso, ele define o ponteiro proximo desse novo ponteiro
+como o atual primeiro da lista, e coloca o primeiro da lista, como o ponteiro que acabou de ser criado, assim inserindo ele no inicio
+*/
 
 //-------------------Inserir um novo elemento após um elemento definido pelo usuario--------------------//
 
@@ -67,10 +83,33 @@ void insereMeioListaSimples(TNo **prim, int k, int elem)
         }
     }
 }
+/*
+Essa função envolve um pouco mais de complexidade, ela recebe os mesmos dados de parametro da insereInicio, porém com um a mais, a posição do elemento
+que o usuário quer inserir depois, com essa informação ela faz a mesma verificação com assert e cria um ponteiro auxiliar para receber o retorno
+da função de alocação, e outro ponteiro auxiliar para podermos percorrer a lista ja existente. Criamos um laço for, para percorrer a lista
+até a posição desejada, caso ele encontre a posição desejada antes de chegar ao fim da lista, ele define o proximo do meu novo nó, como o proximo da
+minha posição atual, e define o proximo da minha posição atual, como o novo nó, inserindo assim, após o nó desejado. Caso ele chegue ao fim da lista
+e não encontre a posição desejada, ele dirá que a lista é pequena demais para o valor desejado.
+*/
 
 //--------------------Remoção de elemento--------------------//
 
 // Início
+
+void removeInicio(TNo **lista)
+{
+    assert(lista);
+    TNo *aux = *lista;
+    if (*lista == NULL)
+    {
+        return;
+    }
+    else
+    {
+        *lista = (*lista)->prox;
+        free(aux);
+    }
+}
 
 // Meio
 
@@ -80,20 +119,55 @@ void removeMeio(TNo **lista, int pos)
 
     for (int i = 1; i <= pos - 1; i++)
     {
-        if (i == pos - 1)
+        if (aux != NULL)
         {
-            TNo *p = aux->prox;
-            aux->prox = p->prox;
+            if (i == pos - 1)
+            {
+                TNo *p = aux->prox;
+                aux->prox = p->prox;
 
-            free(p);
-            p = NULL;
+                free(p);
+                p = NULL;
+            }
+            aux = aux->prox;
+        }
+        else
+        {
+            printf("Posição inválida, ou muito grande para a lista atual!\n");
+            break;
+        }
+    }
+}
+/*
+Essa função de remoção no meio recebe como parametros, o ponteiro de ponteiro para o primeiro nó da lista, e a posição desejada a ser removida,
+a principio ela cria um nó auxiliar que recebe o primeiro da lista, após isso, cria um laço for que percorre a lista até a posição anterior a desejada
+caso ele encontre essa posição na lista, ele verifica se está na posição desejada e cria um nó auxiliar que recebe o proximo do nó atual, e faz com que o 
+proximo do atual nó, seja o próximo do proximo (que foi guardado no ponteiro auxiliar), após isso libera a memória do nó desejado. Caso ele não encontre
+essa posição na lista, imprime uma mensagem de erro e para o laço de repetição.
+*/
+
+//-------------------Busca de elemento--------------------//
+TNo *buscaNo(TNo **lista, int chave)
+{
+    TNo *aux = *lista;
+    while (aux != NULL)
+    {
+        if (aux->chave == chave)
+        {
+            return aux;
         }
         aux = aux->prox;
     }
+    return NULL;
 }
-
-//-------------------Busca de elemento--------------------//
-
+/*
+Essa função recebe o ponteiro de ponteiro para o primeiro da lista e a chave de pesquisa
+ela cria um ponteiro auxiliar para percorrermos e trabalhar na função, após isso
+ela inicia um laço de repetição que repete até que a lista seja nula. Dentro do laço
+ela verifica se a chave do nó atual é igual a chave de pesquisa, caso seja, ela retorna o endereço do nó atual
+caso não seja, ela avança para o proximo nó, caso ela chegue ao ultimo e não encontre a chave desejada
+retorna nulo.
+*/
 //--------------------Imprime lista---------------------//
 
 void imprimeLista(TNo *lista)
@@ -111,11 +185,17 @@ void imprimeLista(TNo *lista)
     }
 }
 
+/*
+Essa função recebe como parametro o ponteiro do primeiro nó da lista, caso a lista esteja vazia, ele imprime "Lista vazia!" e para a execução,
+caso não, ele inicia um while que percorre a lista até que ela seja nula, e imprime a chave de cada nó.
+*/
+
 //--------------------Função Main-----------------------//
 
 int main()
 {
     TNo *prim = NULL;
+    TNo *recebeBusca = NULL;
 
     insereInicioListaSimples(&prim, 10);
     insereInicioListaSimples(&prim, 5);
@@ -125,6 +205,17 @@ int main()
     imprimeLista(prim);
     removeMeio(&prim, 2);
     printf("------------\n");
+    removeInicio(&prim);
     imprimeLista(prim);
+
+    recebeBusca = buscaNo(&prim, 5);
+    if (recebeBusca != NULL)
+    {
+        printf("chave: %d\n", recebeBusca->chave);
+    }
+    else
+    {
+        printf("Nó não encontrado.\n");
+    }
     return 0;
 }
